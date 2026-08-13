@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="es-HN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CitaYa — Reservas para negocios de servicios en Honduras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14212B;
+    --ink-soft:#233642;
+    --paper:#F5F3EE;
+    --paper-dim:#EAE6DC;
+    --guava:#E63950;
+    --guava-dark:#C22740;
+    --teal:#0F6E6E;
+    --teal-soft:#E4F0EE;
+    --amber:#F3A93C;
+    --line: rgba(20,33,43,0.14);
+    --white:#FFFEFB;
+    --shadow: 0 18px 40px -18px rgba(20,33,43,0.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace; letter-spacing:0.01em;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(245,243,238,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 32px; max-width:1180px; margin:0 auto;
+  }
+  .logo{display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:700; font-size:1.28rem;}
+  .logo-mark{
+    width:30px;height:30px;border-radius:9px;
+    background:var(--guava); position:relative; flex:none;
+  }
+  .logo-mark::after{
+    content:"";position:absolute; inset:7px 7px 9px 7px;
+    border:2px solid var(--white); border-radius:3px;
+  }
+  .logo-mark::before{
+    content:"";position:absolute; top:4px; left:9px; width:2px; height:6px;
+    background:var(--white); box-shadow:9px 0 0 var(--white);
+  }
+  .nav-links{display:flex; gap:30px; font-size:0.92rem; font-weight:600;}
+  .nav-links a{text-decoration:none; opacity:0.75; transition:opacity .15s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-cta{
+    background:var(--ink); color:var(--white); border:none;
+    padding:10px 20px; border-radius:100px; font-weight:700; font-size:0.88rem;
+    cursor:pointer; transition:transform .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+  .nav-cta:hover{background:var(--guava); transform:translateY(-1px);}
+  .nav-burger{
+    display:none; width:40px; height:40px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--white); cursor:pointer; flex:none; position:relative;
+  }
+  .nav-burger span, .nav-burger span::before, .nav-burger span::after{
+    content:""; position:absolute; left:10px; right:10px; height:2px; background:var(--ink);
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .nav-burger span{top:19px;}
+  .nav-burger span::before{content:""; top:-6px;}
+  .nav-burger span::after{content:""; top:6px;}
+  .nav-burger.open span{background:transparent;}
+  .nav-burger.open span::before{transform:translateY(6px) rotate(45deg);}
+  .nav-burger.open span::after{transform:translateY(-6px) rotate(-45deg);}
+  .mobile-menu{
+    display:none; flex-direction:column; gap:2px; padding:10px 32px 18px;
+    border-bottom:1px solid var(--line); background:var(--paper);
+  }
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{
+    text-decoration:none; color:var(--ink); font-weight:700; font-size:0.98rem;
+    padding:12px 4px; border-bottom:1px solid var(--line);
+  }
+  .mobile-menu a:last-child{border-bottom:none;}
+  @media (max-width:820px){
+    .nav-links{display:none;}
+    .nav-burger{display:block;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 40px;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;}
+  @media (max-width:940px){ .hero-grid{grid-template-columns:1fr; gap:48px;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.76rem; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--teal);
+    background:var(--teal-soft); padding:6px 12px 6px 10px; border-radius:100px;
+    margin-bottom:22px;
+  }
+  .eyebrow span.dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+
+  .hero h1{
+    font-size:clamp(2.5rem, 4.6vw, 3.85rem);
+    line-height:1.03; font-weight:600;
+  }
+  .hero h1 em{font-style:italic; color:var(--guava); font-weight:500;}
+  .hero p.lead{
+    font-size:1.13rem; line-height:1.6; color:var(--ink-soft);
+    max-width:46ch; margin:22px 0 32px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:38px;}
+  .btn-primary{
+    background:var(--guava); color:var(--white); border:none;
+    padding:15px 26px; border-radius:100px; font-weight:700; font-size:0.96rem;
+    cursor:pointer; box-shadow:var(--shadow); transition:transform .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-primary:hover{transform:translateY(-2px); background:var(--guava-dark);}
+  .btn-ghost{
+    background:transparent; color:var(--ink); border:1.5px solid var(--line);
+    padding:14px 24px; border-radius:100px; font-weight:700; font-size:0.96rem;
+    cursor:pointer; transition:border-color .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-ghost:hover{border-color:var(--ink); background:var(--white);}
+
+  .hero-stats{display:flex; gap:34px; flex-wrap:wrap;}
+  .hero-stats .stat b{
+    font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; display:block;
+    color:var(--ink);
+  }
+  .hero-stats .stat span{font-size:0.8rem; color:var(--ink-soft);}
+
+  /* ---------- PHONE DEMO ---------- */
+  .phone-stage{display:flex; justify-content:center; position:relative;}
+  .phone-stage::before{
+    content:"";position:absolute; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle, rgba(230,57,80,0.16), transparent 70%);
+    top:-20px; z-index:0;
+  }
+  .phone{
+    position:relative; z-index:1;
+    width:280px; height:572px; background:var(--ink);
+    border-radius:38px; padding:12px; box-shadow:var(--shadow);
+    max-width:88vw; max-height:calc(88vw * 572 / 280);
+  }
+  .phone-screen{
+    width:100%; height:100%; background:var(--white); border-radius:28px;
+    overflow:hidden; position:relative; display:flex; flex-direction:column;
+  }
+  .phone-notch{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:80px; height:18px; background:var(--ink); border-radius:100px; z-index:5;
+  }
+  .app-topbar{
+    padding:34px 18px 12px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .app-topbar .back{
+    font-size:1.1rem; width:30px;height:30px;border-radius:50%;background:var(--paper-dim);
+    display:flex;align-items:center;justify-content:center; cursor:pointer; user-select:none;
+  }
+  .app-title{font-family:'Fraunces',serif; font-weight:600; font-size:1.02rem;}
+  .step-dots{display:flex; gap:5px; padding:0 18px 10px;}
+  .step-dots i{height:4px; flex:1; border-radius:100px; background:var(--paper-dim); display:block;}
+  .step-dots i.done{background:var(--guava);}
+
+  .app-body{flex:1; padding:6px 18px 18px; overflow-y:auto;}
+  .app-screen{display:none; animation:fadeIn .3s ease;}
+  .app-screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .biz-card{
+    display:flex; gap:10px; align-items:center; padding:11px; border-radius:14px;
+    border:1.5px solid var(--line); margin-bottom:9px; cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .biz-card:hover{border-color:var(--guava);}
+  .biz-card.selected{border-color:var(--guava); background:#FDEEF0;}
+  .biz-avatar{width:38px;height:38px;border-radius:10px; flex:none; display:flex; align-items:center; justify-content:center; font-size:1.05rem;}
+  .biz-info b{display:block; font-size:0.85rem;}
+  .biz-info span{font-size:0.72rem; color:var(--ink-soft);}
+
+  .svc-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 2px; border-bottom:1px solid var(--line); cursor:pointer;
+  }
+  .svc-row:last-child{border-bottom:none;}
+  .svc-row .name{font-size:0.85rem; font-weight:600;}
+  .svc-row .meta{font-size:0.7rem; color:var(--ink-soft);}
+  .svc-row .price{font-family:'IBM Plex Mono',monospace; font-size:0.82rem; color:var(--teal); font-weight:600;}
+  .svc-check{
+    width:19px;height:19px;border-radius:50%; border:1.5px solid var(--line); flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:0.65rem; color:var(--white);
+  }
+  .svc-row.selected .svc-check{background:var(--guava); border-color:var(--guava);}
+
+  .day-strip{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; margin-bottom:12px;}
+  .day-pill{
+    flex:none; width:44px; padding:8px 0; border-radius:12px; text-align:center;
+    border:1.5px solid var(--line); cursor:pointer; font-size:0.72rem;
+  }
+  .day-pill b{display:block; font-size:0.95rem; font-family:'IBM Plex Mono',monospace;}
+  .day-pill.selected{background:var(--ink); border-color:var(--ink); color:var(--white);}
+
+  .slot-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .slot{
+    border:1.5px solid var(--line); border-radius:10px; text-align:center; padding:8px 0;
+    font-family:'IBM Plex Mono',monospace; font-size:0.76rem; cursor:pointer;
+  }
+  .slot.selected{background:var(--guava); border-color:var(--guava); color:var(--white); font-weight:600;}
+  .slot.taken{opacity:0.3; text-decoration:line-through; cursor:not-allowed;}
+
+  .ticket{
+    margin-top:6px; border-radius:16px; background:var(--teal-soft); position:relative;
+    padding:18px; text-align:center;
+  }
+  .ticket .check{
+    width:44px;height:44px;border-radius:50%; background:var(--teal); color:var(--white);
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin:0 auto 10px;
+  }
+  .ticket h4{font-family:'Fraunces',serif; font-weight:600; font-size:1rem; margin-bottom:4px;}
+  .ticket p{font-size:0.75rem; color:var(--ink-soft); margin:0 0 12px;}
+  .ticket .divider{border-top:1.5px dashed var(--line); margin:10px 0; position:relative;}
+  .ticket .divider::before,.ticket .divider::after{
+    content:""; position:absolute; top:-7px; width:14px;height:14px; border-radius:50%; background:var(--white);
+  }
+  .ticket .divider::before{left:-25px;} .ticket .divider::after{right:-25px;}
+  .ticket-row{display:flex; justify-content:space-between; font-size:0.76rem; padding:3px 0;}
+  .ticket-row b{font-family:'IBM Plex Mono',monospace;}
+
+  .app-cta{
+    margin-top:14px; width:100%; background:var(--guava); color:var(--white); border:none;
+    padding:13px; border-radius:100px; font-weight:700; font-size:0.86rem; cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .app-cta:disabled{background:var(--paper-dim); color:var(--ink-soft); cursor:not-allowed;}
+  .app-cta.ghost2{background:transparent; border:1.5px solid var(--line); color:var(--ink); margin-top:8px;}
+  .sec-label{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); font-weight:700; margin:14px 0 8px;}
+  .sec-label:first-child{margin-top:0;}
+
+  @media (max-width:480px){
+    .phone{ width:240px; height:490px; }
+    .phone-stage::before{ width:260px; height:260px; }
+  }
+  @media (max-width:380px){
+    .phone{ width:210px; height:430px; }
+  }
+  .stats-strip{
+    background:var(--ink); color:var(--white); padding:44px 0; margin-top:60px;
+  }
+  .stats-strip .wrap{display:grid; grid-template-columns:repeat(4,1fr); gap:24px;}
+  @media (max-width:820px){ .stats-strip .wrap{grid-template-columns:repeat(2,1fr);} }
+  .stats-strip .stat b{
+    font-family:'IBM Plex Mono',monospace; font-size:2.1rem; font-weight:600; color:var(--amber); display:block;
+  }
+  .stats-strip .stat span{font-size:0.82rem; opacity:0.75; line-height:1.4; display:block; margin-top:4px;}
+
+  /* ---------- SECTION GENERIC ---------- */
+  section{padding:88px 0;}
+  .section-head{max-width:640px; margin-bottom:52px;}
+  .section-head .eyebrow{margin-bottom:16px;}
+  .section-head h2{font-size:clamp(1.9rem,3vw,2.5rem); font-weight:600; line-height:1.15;}
+  .section-head p{color:var(--ink-soft); font-size:1.03rem; margin-top:14px; line-height:1.6;}
+
+  /* how it works — ticket cards */
+  .steps-row{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media (max-width:860px){ .steps-row{grid-template-columns:1fr;} }
+  .step-ticket{
+    background:var(--white); border-radius:20px; padding:28px 24px 26px;
+    border:1.5px solid var(--line); position:relative;
+  }
+  .step-ticket::after{
+    content:""; position:absolute; left:0; right:0; bottom:64px; height:0;
+    border-top:1.5px dashed var(--line);
+  }
+  .step-ticket .num{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:600; color:var(--guava);
+    background:#FDEEF0; display:inline-block; padding:4px 10px; border-radius:100px; margin-bottom:16px;
+  }
+  .step-ticket h3{font-size:1.15rem; font-weight:600; margin-bottom:8px;}
+  .step-ticket p{color:var(--ink-soft); font-size:0.9rem; line-height:1.55; margin:0;}
+
+  /* toggle cliente/negocio */
+  .toggle-row{display:flex; gap:8px; background:var(--paper-dim); padding:5px; border-radius:100px; width:fit-content; margin-bottom:36px; flex-wrap:wrap;}
+  .toggle-btn{
+    border:none; background:transparent; padding:9px 20px; border-radius:100px; font-weight:700;
+    font-size:0.86rem; cursor:pointer; font-family:'Inter',sans-serif; color:var(--ink-soft);
+    transition:all .18s ease; white-space:nowrap;
+  }
+  .toggle-btn.active{background:var(--ink); color:var(--white);}
+  @media (max-width:600px){
+    .toggle-row{width:100%; border-radius:16px;}
+    .toggle-btn{flex:1; padding:9px 10px; font-size:0.76rem; text-align:center;}
+  }
+
+  /* business dashboard mock */
+  .dash-panel{display:none;}
+  .dash-panel.active{display:grid;}
+  .dash-panel{grid-template-columns:1.3fr 1fr; gap:22px;}
+  @media (max-width:900px){ .dash-panel{grid-template-columns:1fr;} }
+  .dash-card{background:var(--white); border-radius:18px; border:1.5px solid var(--line); padding:22px;}
+  .dash-card h4{font-size:0.98rem; font-weight:700; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;}
+  .dash-card h4 .tag{font-size:0.66rem; background:var(--teal-soft); color:var(--teal); padding:3px 9px; border-radius:100px; font-weight:700;}
+  .agenda-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:0.85rem;}
+  .agenda-row:last-child{border:none;}
+  .agenda-time{font-family:'IBM Plex Mono',monospace; width:52px; color:var(--ink-soft); font-size:0.78rem;}
+  .agenda-bar{flex:1; background:var(--teal-soft); border-left:3px solid var(--teal); padding:7px 10px; border-radius:6px;}
+  .agenda-bar b{display:block; font-size:0.82rem;}
+  .agenda-bar span{font-size:0.7rem; color:var(--ink-soft);}
+  .agenda-bar.confirmed{border-color:var(--guava); background:#FDEEF0;}
+
+  .kpi-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .kpi{background:var(--paper); border-radius:12px; padding:14px;}
+  .kpi b{font-family:'IBM Plex Mono',monospace; font-size:1.35rem; display:block; color:var(--ink);}
+  .kpi span{font-size:0.72rem; color:var(--ink-soft);}
+  .bars{display:flex; align-items:flex-end; gap:8px; height:90px; margin-top:16px;}
+  .bars .bar{flex:1; background:var(--paper-dim); border-radius:5px 5px 0 0; position:relative;}
+  .bars .bar i{position:absolute; bottom:0; left:0; right:0; background:var(--teal); border-radius:5px 5px 0 0;}
+  .bars .bar.up i{background:var(--guava);}
+  .bars .bar span{position:absolute; bottom:-20px; left:0; right:0; text-align:center; font-size:0.62rem; color:var(--ink-soft);}
+
+  /* gestión de reservas */
+  .resv-panel{display:none; width:100%;}
+  .resv-panel.active{display:block;}
+  .resv-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .filter-chip{
+    border:1.5px solid var(--line); background:var(--white); color:var(--ink-soft);
+    padding:7px 15px; border-radius:100px; font-size:0.8rem; font-weight:700; cursor:pointer;
+    font-family:'Inter',sans-serif; transition:all .15s ease;
+  }
+  .filter-chip.active{background:var(--ink); border-color:var(--ink); color:var(--white);}
+  .filter-chip:hover:not(.active){border-color:var(--ink);}
+
+  .resv-table{width:100%; overflow-x:auto;}
+  .resv-head{
+    display:grid; grid-template-columns:1.3fr 1.3fr 0.9fr 0.7fr 1fr 0.8fr 0.9fr;
+    gap:10px; padding:0 12px 10px; font-size:0.68rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--ink-soft); font-weight:700; min-width:640px;
+  }
+  .resv-row{
+    display:grid; grid-template-columns:1.3fr 1.3fr 0.9fr 0.7fr 1fr 0.8fr 0.9fr;
+    gap:10px; align-items:center; padding:13px 12px; border-radius:12px; font-size:0.83rem;
+    min-width:640px; transition:background .15s ease;
+  }
+  .resv-row:nth-child(odd){background:var(--paper);}
+  .resv-row:hover{background:var(--teal-soft);}
+  .resv-row .client{font-weight:700;}
+  .resv-row .sub{display:block; font-size:0.7rem; color:var(--ink-soft); font-weight:400;}
+  .resv-row .amt{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; font-size:0.7rem; font-weight:700;
+    padding:4px 10px; border-radius:100px; width:fit-content;
+  }
+  .badge::before{content:""; width:6px; height:6px; border-radius:50%;}
+  .badge.pendiente{background:#FFF3E0; color:#A8681B;}
+  .badge.pendiente::before{background:#F3A93C;}
+  .badge.confirmada{background:var(--teal-soft); color:var(--teal);}
+  .badge.confirmada::before{background:var(--teal);}
+  .badge.completada{background:#E9F3E6; color:#3E7A34;}
+  .badge.completada::before{background:#3E7A34;}
+  .badge.cancelada{background:#FDEEF0; color:var(--guava-dark);}
+  .badge.cancelada::before{background:var(--guava);}
+
+  .resv-actions{display:flex; gap:6px; justify-content:flex-end;}
+  .act-btn{
+    width:28px; height:28px; border-radius:8px; border:1.5px solid var(--line); background:var(--white);
+    cursor:pointer; font-size:0.78rem; display:flex; align-items:center; justify-content:center;
+    transition:all .15s ease; flex:none;
+  }
+  .act-btn:hover{border-color:var(--teal); background:var(--teal-soft);}
+  .act-btn.danger:hover{border-color:var(--guava); background:#FDEEF0;}
+  .resv-empty{padding:30px 12px; text-align:center; color:var(--ink-soft); font-size:0.86rem;}
+
+  /* reservas en tarjeta para móvil */
+  @media (max-width:700px){
+    .resv-table{overflow-x:visible;}
+    .resv-head{display:none;}
+    .resv-row{
+      display:flex; flex-wrap:wrap; min-width:0; gap:6px 14px; border:1px solid var(--line);
+      margin-bottom:10px; background:var(--white);
+    }
+    .resv-row:nth-child(odd){background:var(--white);}
+    .resv-cell{display:flex; flex-direction:column; gap:2px; min-width:44%;}
+    .resv-cell[data-label]::before{
+      content:attr(data-label); font-size:0.62rem; text-transform:uppercase;
+      letter-spacing:0.05em; color:var(--ink-soft); font-weight:700;
+    }
+    .resv-cell.full{min-width:100%;}
+    .resv-actions{justify-content:flex-start; width:100%;}
+  }
+
+  /* pricing */
+  .price-row{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:820px){ .price-row{grid-template-columns:1fr;} }
+  .price-ticket{
+    background:var(--white); border-radius:22px; padding:34px; position:relative; border:1.5px solid var(--line);
+  }
+  .price-ticket.highlight{background:var(--ink); color:var(--white); border-color:var(--ink);}
+  .price-ticket .tag{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--guava); font-weight:700;}
+  .price-ticket.highlight .tag{color:var(--amber);}
+  .price-ticket .amount{font-family:'Fraunces',serif; font-size:2.6rem; font-weight:600; margin:12px 0 4px;}
+  .price-ticket .amount span{font-size:1rem; font-weight:400; opacity:0.6; font-family:'Inter',sans-serif;}
+  .price-ticket .cut{
+    border-top:1.5px dashed var(--line); margin:22px 0; position:relative;
+  }
+  .price-ticket.highlight .cut{border-color:rgba(255,255,255,0.25);}
+  .price-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px;}
+  .price-list li{display:flex; gap:10px; font-size:0.88rem; align-items:flex-start;}
+  .price-list li::before{content:"✓"; color:var(--teal); font-weight:700;}
+  .price-ticket.highlight .price-list li::before{color:var(--amber);}
+
+  /* footer */
+  footer{background:var(--ink); color:var(--white); padding:50px 0 28px; margin-top:40px;}
+  .foot-grid{display:flex; justify-content:space-between; flex-wrap:wrap; gap:30px; padding-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.14);}
+  footer .logo{color:var(--white);}
+  .foot-meta{font-size:0.82rem; opacity:0.65; line-height:1.7; text-align:right;}
+  @media (max-width:600px){ .foot-meta{text-align:left;} }
+  .foot-bottom{padding-top:20px; font-size:0.76rem; opacity:0.5; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span>CitaYa</div>
+    <div class="nav-links">
+      <a href="#demo">Demo</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#negocio">Panel de negocio</a>
+      <a href="#precios">Precios</a>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="nav-cta" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'}); closeMenu();">Probar demo</button>
+      <button class="nav-burger" id="navBurger" onclick="toggleMenu()" aria-label="Abrir menú"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#demo" onclick="closeMenu()">Demo</a>
+    <a href="#como-funciona" onclick="closeMenu()">Cómo funciona</a>
+    <a href="#negocio" onclick="closeMenu()">Panel de negocio</a>
+    <a href="#precios" onclick="closeMenu()">Precios</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Prototipo · Proyecto de Inversión PIE-0815</div>
+      <h1>Menos llamadas.<br>Menos <em>inasistencias</em>.<br>Más agenda llena.</h1>
+      <p class="lead">CitaYa conecta salones, barberías, spas y talleres de Honduras con sus clientes: reservas en línea, recordatorios automáticos y una agenda que se administra sola.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Ver flujo de reserva</button>
+        <button class="btn-ghost" onclick="document.getElementById('negocio').scrollIntoView({behavior:'smooth'})">Ver panel de negocio</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>L 700</b><span>suscripción mensual / negocio</span></div>
+        <div class="stat"><b>7%</b><span>comisión por reserva</span></div>
+        <div class="stat"><b>3,000+</b><span>negocios objetivo en TGU y SPS</span></div>
+      </div>
+    </div>
+
+    <div class="phone-stage" id="demo">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="app-topbar">
+            <div class="back" id="backBtn" onclick="prevStep()">‹</div>
+            <div class="app-title" id="stepTitle">Elegí tu negocio</div>
+            <div style="width:30px;"></div>
+          </div>
+          <div class="step-dots">
+            <i id="dot0"></i><i id="dot1"></i><i id="dot2"></i><i id="dot3"></i>
+          </div>
+          <div class="app-body">
+
+            <!-- STEP 0: elegir negocio -->
+            <div class="app-screen active" id="screen0">
+              <div class="sec-label">Cerca de vos · Tegucigalpa</div>
+              <div class="biz-card selected" data-name="Estudio Nairé" onclick="pickBiz(this,'Estudio Nairé')">
+                <div class="biz-avatar" style="background:#FDEEF0;">💇🏽‍♀️</div>
+                <div class="biz-info"><b>Estudio Nairé</b><span>Salón de belleza · Col. Palmira</span></div>
+              </div>
+              <div class="biz-card" data-name="Barbería El Zaguán" onclick="pickBiz(this,'Barbería El Zaguán')">
+                <div class="biz-avatar" style="background:#E4F0EE;">💈</div>
+                <div class="biz-info"><b>Barbería El Zaguán</b><span>Barbería · Col. Kennedy</span></div>
+              </div>
+              <div class="biz-card" data-name="Spa Ceiba" onclick="pickBiz(this,'Spa Ceiba')">
+                <div class="biz-avatar" style="background:#FFF3E0;">💆🏽</div>
+                <div class="biz-info"><b>Spa Ceiba</b><span>Spa &amp; masajes · Col. Lomas</span></div>
+              </div>
+              <button class="app-cta" onclick="nextStep()">Continuar</button>
+            </div>
+
+            <!-- STEP 1: elegir servicio -->
+            <div class="app-screen" id="screen1">
+              <div class="sec-label" id="bizChosenLabel">Estudio Nairé</div>
+              <div class="svc-row selected" onclick="pickSvc(this,'Corte + brushing','L 350')">
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div class="svc-check">✓</div>
+                  <div><div class="name">Corte + brushing</div><div class="meta">45 min</div></div>
+                </div>
+                <div class="price">L 350</div>
+              </div>
+              <div class="svc-row" onclick="pickSvc(this,'Manicure spa','L 280')">
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div class="svc-check"></div>
+                  <div><div class="name">Manicure spa</div><div class="meta">40 min</div></div>
+                </div>
+                <div class="price">L 280</div>
+              </div>
+              <div class="svc-row" onclick="pickSvc(this,'Color completo','L 950')">
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div class="svc-check"></div>
+                  <div><div class="name">Color completo</div><div class="meta">2h 10min</div></div>
+                </div>
+                <div class="price">L 950</div>
+              </div>
+              <button class="app-cta" onclick="nextStep()">Elegir horario</button>
+            </div>
+
+            <!-- STEP 2: elegir fecha/hora -->
+            <div class="app-screen" id="screen2">
+              <div class="sec-label">Elegí día</div>
+              <div class="day-strip">
+                <div class="day-pill" onclick="pickDay(this,'Mié 12')">MIÉ<b>12</b></div>
+                <div class="day-pill selected" onclick="pickDay(this,'Jue 13')">JUE<b>13</b></div>
+                <div class="day-pill" onclick="pickDay(this,'Vie 14')">VIE<b>14</b></div>
+                <div class="day-pill" onclick="pickDay(this,'Sáb 15')">SÁB<b>15</b></div>
+                <div class="day-pill" onclick="pickDay(this,'Lun 17')">LUN<b>17</b></div>
+              </div>
+              <div class="sec-label">Horarios disponibles</div>
+              <div class="slot-grid">
+                <div class="slot taken">9:00</div>
+                <div class="slot" onclick="pickSlot(this,'10:00 am')">10:00</div>
+                <div class="slot" onclick="pickSlot(this,'11:15 am')">11:15</div>
+                <div class="slot selected" onclick="pickSlot(this,'2:30 pm')">2:30</div>
+                <div class="slot" onclick="pickSlot(this,'3:45 pm')">3:45</div>
+                <div class="slot taken">5:00</div>
+              </div>
+              <button class="app-cta" onclick="nextStep()">Confirmar cita</button>
+            </div>
+
+            <!-- STEP 3: confirmación / boleta -->
+            <div class="app-screen" id="screen3">
+              <div class="ticket">
+                <div class="check">✓</div>
+                <h4>¡Cita confirmada!</h4>
+                <p>Te enviaremos un recordatorio 24h y 2h antes por WhatsApp.</p>
+                <div class="divider"></div>
+                <div class="ticket-row"><span>Negocio</span><b id="tkBiz">Estudio Nairé</b></div>
+                <div class="ticket-row"><span>Servicio</span><b id="tkSvc">Corte + brushing</b></div>
+                <div class="ticket-row"><span>Fecha</span><b id="tkDay">Jue 13</b></div>
+                <div class="ticket-row"><span>Hora</span><b id="tkSlot">2:30 pm</b></div>
+                <div class="ticket-row"><span>Total</span><b id="tkPrice">L 350</b></div>
+              </div>
+              <button class="app-cta ghost2" onclick="restartDemo()">Reservar otra cita</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats-strip">
+  <div class="wrap">
+    <div class="stat"><b>L 700,000</b><span>inversión inicial estimada</span></div>
+    <div class="stat"><b>35.7%</b><span>TIR proyectada a 5 años</span></div>
+    <div class="stat"><b>3.4 años</b><span>período de recuperación (PRI)</span></div>
+    <div class="stat"><b>300</b><span>negocios afiliados meta al año 5</span></div>
+  </div>
+</div>
+
+<section id="como-funciona">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="dot"></span>Cómo funciona</div>
+      <h2>Tres pasos, de la búsqueda al recordatorio.</h2>
+      <p>El mismo flujo que probaste arriba es el que usará cualquier cliente final en Tegucigalpa o San Pedro Sula, sin llamar ni escribir por WhatsApp.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step-ticket reveal">
+        <div class="num">01</div>
+        <h3>Buscar y elegir</h3>
+        <p>El cliente encuentra negocios cercanos, compara servicios y precios, y ve la disponibilidad real del día — sin preguntar por chat.</p>
+      </div>
+      <div class="step-ticket reveal">
+        <div class="num">02</div>
+        <h3>Reservar en segundos</h3>
+        <p>Selecciona servicio, día y hora libre. La cita queda en la agenda del negocio al instante, sin dobles reservas.</p>
+      </div>
+      <div class="step-ticket reveal">
+        <div class="num">03</div>
+        <h3>Recordatorio automático</h3>
+        <p>CitaYa avisa por WhatsApp 24h y 2h antes. Menos inasistencias, menos horas perdidas coordinando por teléfono.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="negocio" style="background:var(--paper-dim);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="dot"></span>Para el negocio afiliado</div>
+      <h2>La misma reserva, vista desde el mostrador.</h2>
+      <p>Cada cita que un cliente hace en la app aparece de inmediato en el panel del negocio, con reportes simples para tomar decisiones.</p>
+    </div>
+
+    <div class="toggle-row">
+      <button class="toggle-btn active" id="tglAgenda" onclick="showDash('agenda')">Agenda de hoy</button>
+      <button class="toggle-btn" id="tglReservas" onclick="showDash('reservas')">Gestión de reservas</button>
+      <button class="toggle-btn" id="tglReportes" onclick="showDash('reportes')">Reportes</button>
+    </div>
+
+    <div class="dash-panel active" id="dashAgenda">
+      <div class="dash-card">
+        <h4>Jueves 13 · Estudio Nairé <span class="tag">6 citas hoy</span></h4>
+        <div class="agenda-row"><div class="agenda-time">9:00</div><div class="agenda-bar confirmed"><b>Manicure spa</b><span>Diana R. · confirmada por WhatsApp</span></div></div>
+        <div class="agenda-row"><div class="agenda-time">10:30</div><div class="agenda-bar"><b>Corte + color</b><span>Melissa T. · pendiente de confirmar</span></div></div>
+        <div class="agenda-row"><div class="agenda-time">12:00</div><div class="agenda-bar confirmed"><b>Corte + brushing</b><span>Karen V. · confirmada por WhatsApp</span></div></div>
+        <div class="agenda-row"><div class="agenda-time">14:30</div><div class="agenda-bar confirmed"><b>Corte + brushing</b><span>Reservado desde la demo · 2:30 pm</span></div></div>
+        <div class="agenda-row"><div class="agenda-time">16:00</div><div class="agenda-bar"><b>Manicure spa</b><span>Fátima G. · pendiente de confirmar</span></div></div>
+      </div>
+      <div class="dash-card">
+        <h4>Resumen del día</h4>
+        <div class="kpi-grid">
+          <div class="kpi"><b>6</b><span>citas agendadas</span></div>
+          <div class="kpi"><b>92%</b><span>ocupación del día</span></div>
+          <div class="kpi"><b>L 2,690</b><span>ingreso estimado hoy</span></div>
+          <div class="kpi"><b>0</b><span>inasistencias hoy</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="resv-panel" id="dashReservas">
+      <div class="dash-card" style="width:100%;">
+        <h4>Todas las reservas <span class="tag" id="resvCount">18 este mes</span></h4>
+
+        <div class="resv-filters">
+          <button class="filter-chip active" data-f="todas" onclick="filterResv(this,'todas')">Todas</button>
+          <button class="filter-chip" data-f="pendiente" onclick="filterResv(this,'pendiente')">Pendientes</button>
+          <button class="filter-chip" data-f="confirmada" onclick="filterResv(this,'confirmada')">Confirmadas</button>
+          <button class="filter-chip" data-f="completada" onclick="filterResv(this,'completada')">Completadas</button>
+          <button class="filter-chip" data-f="cancelada" onclick="filterResv(this,'cancelada')">Canceladas</button>
+        </div>
+
+        <div class="resv-table" id="resvTable">
+          <div class="resv-head">
+            <span>Cliente</span><span>Servicio</span><span>Fecha</span><span>Hora</span><span>Estado</span><span>Monto</span><span></span>
+          </div>
+          <div id="resvBody"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-panel" id="dashReportes">
+      <div class="dash-card">
+        <h4>Reservas por semana <span class="tag">últimas 6 semanas</span></h4>
+        <div class="bars">
+          <div class="bar"><i style="height:38%"></i><span>S1</span></div>
+          <div class="bar"><i style="height:46%"></i><span>S2</span></div>
+          <div class="bar"><i style="height:52%"></i><span>S3</span></div>
+          <div class="bar"><i style="height:61%"></i><span>S4</span></div>
+          <div class="bar up"><i style="height:74%"></i><span>S5</span></div>
+          <div class="bar up"><i style="height:88%"></i><span>S6</span></div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <h4>Impacto de los recordatorios</h4>
+        <div class="kpi-grid">
+          <div class="kpi"><b>-63%</b><span>inasistencias vs. agenda manual</span></div>
+          <div class="kpi"><b>4.8h</b><span>tiempo administrativo ahorrado / semana</span></div>
+          <div class="kpi"><b>34</b><span>clientes recurrentes este mes</span></div>
+          <div class="kpi"><b>4.9★</b><span>calificación promedio del negocio</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="precios">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="dot"></span>Precios para negocios</div>
+      <h2>Un modelo que crece con cada negocio.</h2>
+      <p>Suscripción fija más comisión variable: CitaYa gana cuando el negocio gana más citas, no antes.</p>
+    </div>
+    <div class="price-row">
+      <div class="price-ticket reveal">
+        <div class="tag">Plan básico</div>
+        <div class="amount">L 700<span>/mes por negocio</span></div>
+        <div class="cut"></div>
+        <ul class="price-list">
+          <li>Agenda en línea ilimitada</li>
+          <li>Recordatorios automáticos por WhatsApp/SMS</li>
+          <li>Perfil del negocio en la app CitaYa</li>
+          <li>Primer mes gratis al afiliarse</li>
+        </ul>
+      </div>
+      <div class="price-ticket highlight reveal">
+        <div class="tag">Por reserva completada</div>
+        <div class="amount">7%<span>de comisión</span></div>
+        <div class="cut"></div>
+        <ul class="price-list">
+          <li>Solo se cobra si la cita se concreta</li>
+          <li>Pasarela de pago en línea opcional</li>
+          <li>Reportes de ingresos y ocupación</li>
+          <li>Programa de referidos: 1 mes gratis por negocio referido</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo"><span class="logo-mark"></span>CitaYa</div>
+        <p style="opacity:0.65; font-size:0.86rem; max-width:34ch; margin-top:12px; line-height:1.6;">Plataforma digital de reservas para negocios de servicios en Honduras. Prototipo de demostración, no funcional para producción.</p>
+      </div>
+      <div class="foot-meta">
+        Proyecto de Inversión · PIE-0815<br>
+        Universidad Tecnológica de Honduras<br>
+        Catedrático: Ing. Marlon Valladares Valle
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 CitaYa — prototipo académico</span>
+      <span>Tegucigalpa · San Pedro Sula</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Mobile nav menu ----
+  function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('navBurger').classList.toggle('open');
+  }
+  function closeMenu(){
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('navBurger').classList.remove('open');
+  }
+
+  // ---- Booking flow demo ----
+  const state = { biz:'Estudio Nairé', svc:'Corte + brushing', price:'L 350', day:'Jue 13', slot:'2:30 pm' };
+  let step = 0;
+  const titles = ['Elegí tu negocio','Elegí el servicio','Elegí día y hora','¡Listo!'];
+
+  function renderStep(){
+    document.querySelectorAll('.app-screen').forEach((el,i)=> el.classList.toggle('active', i===step));
+    document.getElementById('stepTitle').textContent = titles[step];
+    for(let i=0;i<4;i++){ document.getElementById('dot'+i).classList.toggle('done', i<=step); }
+    document.getElementById('backBtn').style.visibility = step===0 ? 'hidden':'visible';
+    if(step===3){
+      document.getElementById('tkBiz').textContent = state.biz;
+      document.getElementById('tkSvc').textContent = state.svc;
+      document.getElementById('tkDay').textContent = state.day;
+      document.getElementById('tkSlot').textContent = state.slot;
+      document.getElementById('tkPrice').textContent = state.price;
+    }
+    if(step===1){ document.getElementById('bizChosenLabel').textContent = state.biz; }
+  }
+  function nextStep(){ if(step<3){ step++; renderStep(); } }
+  function prevStep(){ if(step>0){ step--; renderStep(); } }
+  function restartDemo(){ step=0; renderStep(); }
+
+  function pickBiz(el,name){
+    document.querySelectorAll('#screen0 .biz-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected'); state.biz = name;
+  }
+  function pickSvc(el,name,price){
+    document.querySelectorAll('#screen1 .svc-row').forEach(c=>{c.classList.remove('selected'); c.querySelector('.svc-check').textContent='';});
+    el.classList.add('selected'); el.querySelector('.svc-check').textContent='✓';
+    state.svc = name; state.price = price;
+  }
+  function pickDay(el,label){
+    document.querySelectorAll('.day-pill').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected'); state.day = label;
+  }
+  function pickSlot(el,label){
+    if(el.classList.contains('taken')) return;
+    document.querySelectorAll('.slot').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected'); state.slot = label;
+  }
+  renderStep();
+
+  // ---- Dashboard toggle ----
+  function showDash(which){
+    document.getElementById('dashAgenda').classList.toggle('active', which==='agenda');
+    document.getElementById('dashReservas').classList.toggle('active', which==='reservas');
+    document.getElementById('dashReportes').classList.toggle('active', which==='reportes');
+    document.getElementById('tglAgenda').classList.toggle('active', which==='agenda');
+    document.getElementById('tglReservas').classList.toggle('active', which==='reservas');
+    document.getElementById('tglReportes').classList.toggle('active', which==='reportes');
+  }
+
+  // ---- Gestión de reservas ----
+  const reservas = [
+    {cliente:'Diana Rápalo',   servicio:'Manicure spa',      fecha:'Jue 13', hora:'9:00 am',  estado:'completada', monto:'L 280'},
+    {cliente:'Melissa Turcios',servicio:'Corte + color',     fecha:'Jue 13', hora:'10:30 am', estado:'pendiente',  monto:'L 950'},
+    {cliente:'Karen Valle',    servicio:'Corte + brushing',  fecha:'Jue 13', hora:'12:00 pm', estado:'completada', monto:'L 350'},
+    {cliente:'Cliente demo',   servicio:'Corte + brushing',  fecha:'Jue 13', hora:'2:30 pm',  estado:'confirmada', monto:'L 350'},
+    {cliente:'Fátima Gómez',   servicio:'Manicure spa',      fecha:'Jue 13', hora:'4:00 pm',  estado:'pendiente',  monto:'L 280'},
+    {cliente:'Sofía Andino',   servicio:'Color completo',    fecha:'Vie 14', hora:'9:30 am',  estado:'confirmada', monto:'L 950'},
+    {cliente:'Wendy Cálix',    servicio:'Corte + brushing',  fecha:'Vie 14', hora:'11:00 am', estado:'confirmada', monto:'L 350'},
+    {cliente:'Pedro Zelaya',   servicio:'Manicure spa',      fecha:'Vie 14', hora:'1:00 pm',  estado:'cancelada',  monto:'L 280'},
+    {cliente:'Rosa Amador',    servicio:'Corte + color',     fecha:'Sáb 15', hora:'10:00 am', estado:'confirmada', monto:'L 950'},
+    {cliente:'Iris Núñez',     servicio:'Manicure spa',      fecha:'Sáb 15', hora:'12:30 pm', estado:'pendiente',  monto:'L 280'},
+    {cliente:'Gabriela Ochoa', servicio:'Corte + brushing',  fecha:'Lun 17', hora:'9:00 am',  estado:'cancelada',  monto:'L 350'},
+    {cliente:'Marlon Suazo',   servicio:'Corte + brushing',  fecha:'Lun 17', hora:'3:15 pm',  estado:'confirmada', monto:'L 350'},
+  ];
+  let resvFilter = 'todas';
+
+  function renderResv(){
+    const body = document.getElementById('resvBody');
+    const rows = reservas.filter(r => resvFilter==='todas' || r.estado===resvFilter);
+    document.getElementById('resvCount').textContent = reservas.length + ' este mes';
+
+    if(rows.length===0){
+      body.innerHTML = '<div class="resv-empty">No hay reservas con este estado por ahora.</div>';
+      return;
+    }
+
+    body.innerHTML = rows.map((r,i)=>{
+      const canAct = (r.estado==='pendiente' || r.estado==='confirmada');
+      return `<div class="resv-row">
+        <div class="resv-cell" data-label="Cliente"><span class="client">${r.cliente}</span><span class="sub">Cliente final</span></div>
+        <div class="resv-cell" data-label="Servicio">${r.servicio}</div>
+        <div class="resv-cell" data-label="Fecha">${r.fecha}</div>
+        <div class="resv-cell" data-label="Hora">${r.hora}</div>
+        <div class="resv-cell" data-label="Estado"><span class="badge ${r.estado}">${r.estado}</span></div>
+        <div class="resv-cell amt" data-label="Monto">${r.monto}</div>
+        <div class="resv-cell full resv-actions">
+          ${r.estado==='pendiente' ? `<button class="act-btn" title="Confirmar" onclick="setResvState('${r.cliente}','${r.hora}','confirmada')">✓</button>` : ''}
+          ${canAct ? `<button class="act-btn danger" title="Cancelar" onclick="setResvState('${r.cliente}','${r.hora}','cancelada')">✕</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function setResvState(cliente,hora,nuevoEstado){
+    const item = reservas.find(r=>r.cliente===cliente && r.hora===hora);
+    if(item){ item.estado = nuevoEstado; renderResv(); }
+  }
+
+  function filterResv(el,f){
+    resvFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    renderResv();
+  }
+  renderResv();
+
+  // ---- Reveal on scroll ----
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
